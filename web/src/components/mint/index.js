@@ -2,6 +2,7 @@ import React from 'react';
 import { Context } from '../../context';
 import Minter from '../../context/Minter';
 import { Buy, Button } from  './components';
+import Assets from './components/Assets';
 
 const Mint = () => {
 
@@ -9,9 +10,10 @@ const Mint = () => {
     const { actions, state } = context || {};
     const { isMetaMask } = state;
     const { contractLoaded, account } = state;
-    const { connectWallet, getCoinBalance, web3, price } = actions;
+    const { connectWallet, getCoinBalance, web3, price, getMyAssets } = actions;
 
     const [balance, setBalance] = React.useState('-');
+    const [assets, setAssets] = React.useState([]);
 
     const uniswapLink = 'https://app.uniswap.org/#/swap?chain=polygon_mumbai&outputCurrency=0x80dB8249A828ceFfe8CbefB49dF53eFa59d3d235';
 
@@ -26,8 +28,10 @@ const Mint = () => {
             connectWallet()
     }
 
-    const updateMonsters = (event) => {
-
+    const updateMonsters = async () => {
+      updateBalance();
+      const a = await getMyAssets();
+        setAssets(a);
     }
 
     const updateBalance = async () => {
@@ -38,7 +42,7 @@ const Mint = () => {
 
     React.useEffect(() => {
       if(account != null && contractLoaded){
-        updateBalance();
+        updateMonsters();
       }
     }, [account,contractLoaded ])
 
@@ -69,6 +73,7 @@ const Mint = () => {
                 <p className="mint-container__text">
                   Balance: {balance} SLABS - <a href={uniswapLink} target="_blank">BUY MORE</a>
                 </p>
+              <Assets assets={assets} />
             </React.Fragment>
           )}
         </div>

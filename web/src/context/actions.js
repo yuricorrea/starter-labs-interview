@@ -4,7 +4,10 @@ import * as types from './types';
 import NFT from '../contracts/NFT.json';
 import Coin from '../contracts/COIN.json';
 import Contract from 'web3-eth-contract';
-import Minter from "./Minter";
+import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+
+
+const aweb3 = createAlchemyWeb3("https://polygon-mumbai.g.alchemy.com/v2/SCf7nFPerC9T0es5yYe8_4bt26ZWDap1");
 
 const provider = "wss://polygon-mumbai.g.alchemy.com/v2/SCf7nFPerC9T0es5yYe8_4bt26ZWDap1";
 Contract.setProvider(provider);
@@ -200,6 +203,9 @@ export default (state, dispatch) => {
         isMintOpen: () => {
             return nft?.methods?.mintOpen()?.call();
         },
+        getAttributes: (tokenId) => {
+            return nft?.methods?.attributes(tokenId)?.call();
+        },
         balance: () => {
             return nft?.methods?.balanceOf(state?.account)?.call();
         },
@@ -219,7 +225,8 @@ export default (state, dispatch) => {
             return tx;
         },
         getMyAssets: async () => {
-            return [];
+            const nfts = await aweb3.alchemy.getNfts({ owner: state?.account, contractAddresses: [nftAddress] })
+            return nfts.ownedNfts.map(item => parseInt(item.id.tokenId));
         },
         getCoinBalance
     }
