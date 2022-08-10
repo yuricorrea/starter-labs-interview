@@ -27,7 +27,7 @@ const Buy = ({ onCreatingComplete }) => {
     }
 
     const successFeedback = () => {
-        alert('transaction submitted. waiting confirmation.');
+        // alert('transaction submitted. waiting confirmation.');
     }
 
     const handleMintPress = async () => {
@@ -65,28 +65,33 @@ const Buy = ({ onCreatingComplete }) => {
     const isEqual = (w1, w2) => `${w1}`.toLocaleLowerCase() == `${w2}`.toLocaleLowerCase();
 
     const contractListeners = () => {
-        nft?.events?.Mint()
+        nft?.events?.Mint({ fromBlock: "latest" })
             .on('data', (event) => {
                 if(isEqual(event?.returnValues?.owner,account)){
                     setMinting(false);
                     setCreating(true);
+                } else {
+                    console.log(event);
                 }
             })
             .on('error',onErrorEvent);
-        nft?.events?.CreateMonster()
+        nft?.events?.CreateMonster({ fromBlock: "latest" })
             .on('data', (event) => {
                 if(isEqual(event?.returnValues?.owner,account)){
                     setCreating(false);              
-                    onCreatingComplete(event);
-                    alert('Your monster is ready!');
+                    onCreatingComplete();
+                } else {
+                    console.log(event);
                 }
             })
             .on('error', onErrorEvent)
-        coin?.events?.Approval()
+        coin?.events?.Approval({ fromBlock: "latest" })
             .on('data', (event) => {
                 if(isEqual(event?.returnValues?.owner,account)){
                     updateAllowance();
                     setAllowing(false);
+                } else {
+                    console.log(event);
                 }
             } )
             .on('error',onErrorEvent);
@@ -113,7 +118,7 @@ const Buy = ({ onCreatingComplete }) => {
         if(minting)
             return 'MINTING YOUR MONSTER...';
         if(creating)
-            return 'TREINING YOUR MONSTER...';
+            return 'TRAINING YOUR MONSTER...';
         return isAllowed ? 'MINT' : 'ALLOW';
     }
 
