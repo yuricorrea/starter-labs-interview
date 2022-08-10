@@ -5,13 +5,14 @@ import NFT from '../contracts/NFT.json';
 import Coin from '../contracts/COIN.json';
 import Contract from 'web3-eth-contract';
 import { createAlchemyWeb3 } from '@alch/alchemy-web3';
+import { isMobile } from 'react-device-detect';
 
 
 const aweb3 = createAlchemyWeb3("https://polygon-mumbai.g.alchemy.com/v2/SCf7nFPerC9T0es5yYe8_4bt26ZWDap1");
 
 const provider = "wss://polygon-mumbai.g.alchemy.com/v2/SCf7nFPerC9T0es5yYe8_4bt26ZWDap1";
 Contract.setProvider(provider);
-const web3 = new Web3(provider);
+const web3 = new Web3(isMobile? Web3.givenProvider : provider);
 
 const nftAddress = "0x7E11873e2b43994631a955390D43Bd81402aba58";
 const coinAddress = "0x80dB8249A828ceFfe8CbefB49dF53eFa59d3d235";
