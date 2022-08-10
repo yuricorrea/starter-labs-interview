@@ -12,7 +12,7 @@ const Item = ({ itemId }) => {
 
     const cached = 3;
     
-    const image = `/static/monster-${itemId}.png`;
+    const image = `/static/monster-${imgId}.png`;
 
     const updateItem = async () => {
        const { monster, level } =  await getItem();
