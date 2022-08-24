@@ -48,7 +48,7 @@ contract LABMONSTER is ERC721, Ownable, VRFConsumerBaseV2 {
     constructor() ERC721("LABMONSTER", "LM")  VRFConsumerBaseV2(vrfCoordinator){
         COORDINATOR = VRFCoordinatorV2Interface(vrfCoordinator);
         LINKTOKEN = LinkTokenInterface(link_token_contract);
-        // createNewSubscription();
+        createNewSubscription();
     }
 
     function _baseURI() internal override view returns (string memory) {
@@ -113,7 +113,7 @@ contract LABMONSTER is ERC721, Ownable, VRFConsumerBaseV2 {
 
     function fulfillRandomWords(uint requestId, uint[] memory randomWords) internal override {
         uint monster = (randomWords[0] % 5) + 1;
-        uint level = (randomWords[0] % 100) + 1;
+        uint level = (randomWords[1] % 100) + 1;
         uint tokenId = requests[requestId];
         attributes[tokenId] = Monster(monster, level);
         emit CreateMonster(ownerOf(tokenId),tokenId);
